@@ -43,15 +43,12 @@ int main()
 {
     auto vi = std::make_shared<DQ_CoppeliaSimInterface>();
     vi->connect();
+
+    // Load the models only if they are not already on the scene.
+    vi->load_from_model_browser("/robots/non-mobile/UR5.ttm", "/UR5");
+    vi->load_from_model_browser("/other/reference frame.ttm", "/Current_pose");
+    vi->load_from_model_browser("/other/reference frame.ttm", "/Desired_pose");
     vi->start_simulation();
-
-    // Load the model only if it is not already on the scene.
-    vi->load_model_from_model_browser_if_missing("/robots/non-mobile/UR5.ttm", "/UR5", true);
-
-    // Load the reference frames only if they are not already on the scene.
-    vi->load_model_from_model_browser_if_missing("/other/reference frame.ttm", "/Current_pose");
-    vi->load_model_from_model_browser_if_missing("/other/reference frame.ttm", "/Desired_pose");
-
 
     auto robot = URXCoppeliaSimRobot("/UR5", vi, URXCoppeliaSimRobot::MODEL::UR5);
     auto robot_model = robot.kinematics();
@@ -68,15 +65,13 @@ int main()
     DQ xd = robot_model.fkm(qd);
     vi->set_object_pose("/Desired_pose", xd);
 
-
-    for (int i=0; i<2000; i++)
+    for (int i=0; i<300; i++)
     {
         DQ x = robot_model.fkm(robot.get_configuration_space_positions());
         vi->set_object_pose("/Current_pose", x);
-        MatrixXd J = robot_model.pose_jacobian(q);
+        MatrixXd J =  robot_model.pose_jacobian(q);
         MatrixXd Jt = robot_model.translation_jacobian(J, x);
         VectorXd task_error = (x.translation()-xd.translation()).vec4();
-
         u = compute_control_signal(Jt, q, damping, gain, task_error);
         q = q + T*u;
         robot.set_control_inputs(q);
