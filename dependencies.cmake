@@ -44,5 +44,6 @@ if(WIN32)
         IMPORTED_LOCATION ${DQROBOTICS_COPPELIASIM_PATH}/bin/dqrobotics-interface-coppeliasim.dll
         IMPORTED_IMPLIB   ${DQROBOTICS_COPPELIASIM_PATH}/lib/dqrobotics-interface-coppeliasim.lib
         INTERFACE_INCLUDE_DIRECTORIES ${DQROBOTICS_COPPELIASIM_PATH}/include)
+    target_link_libraries(dqrobotics-interface-coppeliasim INTERFACE cppzmq)
 
 endif()
