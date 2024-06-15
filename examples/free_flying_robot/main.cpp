@@ -31,13 +31,13 @@ int main()
         DQ twist_a = x*twist_b*x.conj();
 
         vi->set_twist(robotname, twist_b,
-                      DQ_CoppeliaSimInterface::BODY_FRAME);
+                      DQ_CoppeliaSimInterface::REFERENCE::BODY_FRAME);
 
         std::cout<<"twist_a :    "<<twist_a<<std::endl;
         std::cout<<"twist_a_:    "<<vi->get_twist(robotname)<<std::endl;
         std::cout<<" "<<std::endl;
         std::cout<<"twist_b :    "<<twist_b<<std::endl;
-        std::cout<<"twist_b_:    "<<vi->get_twist(robotname, DQ_CoppeliaSimInterface::BODY_FRAME)<<std::endl;
+        std::cout<<"twist_b_:    "<<vi->get_twist(robotname, DQ_CoppeliaSimInterface::REFERENCE::BODY_FRAME)<<std::endl;
 
 
         vi->trigger_next_simulation_step();
